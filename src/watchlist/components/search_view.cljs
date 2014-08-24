@@ -12,19 +12,23 @@
 (def ENTER_KEY 13)
 
 
-(defn tv->movie [item]
+(defn- tv->movie [item]
   (if (contains? item :name)
     (assoc (rename-keys item {:name :title :first_air_date :release_date})
            :type :tv-show)
     (assoc item :type :movie)))
 
+(defn- filter-without-images [movies]
+  (remove #(nil? (:poster_path %)) movies))
+
 
 (defn- handle-search [owner query]
-  (go (let [results (map tv->movie
-                         (:results
-                           (<! (merge [ (tmdb/find-tv-show query)
-                                          (tmdb/find-movie query) ]))))]
-        (om/update-state! owner #(assoc % :results (take 5 results))))))
+  (go (let [results (:results (<! (merge [ (tmdb/find-tv-show query)
+                                          (tmdb/find-movie query) ])))]
+        (om/update-state! owner #(assoc % :results (->> results
+                                                        (filter-without-images)
+                                                        (take 5)
+                                                        (map tv->movie)))))))
 
 
 (defn- handle-enter [e owner]
