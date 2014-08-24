@@ -6,8 +6,27 @@
 
 (def ^:private api-key "")
 
-(defn image-url [url]
-  (str "http://d3gtl9l2a4fn1j.cloudfront.net/t/p/w342" url))
+(defn img-size [kind size]
+  (case kind
+    :backdrop (case size
+                :small "w300"
+                :medium "w780"
+                :large "w1280"
+                :huge "original")
+    :poster (case size
+              :tiny "w92"
+              :very-small "w154"
+              :small "w185"
+              :ok "w342"
+              :medium "w500"
+              :large "w780"
+              :huge "original")))
+
+
+
+
+(defn image-url [kind size url]
+  (str "http://image.tmdb.org/t/p/" (img-size kind size)  "/" url))
 
 
 (defn- request [url query]
@@ -19,13 +38,17 @@
     out))
 
 
-(defn load-movies [page]
+(defn popular-movies [page]
   (request "movie/popular" {:page page}))
-
 
 (defn find-movie [title]
   (request "search/movie" {:query title}))
 
+(defn find-tv-show [title]
+  (request "search/tv" {:query title}))
 
-(defn load-movie [id]
+(defn get-movie [id]
   (request (str "movie/" id)))
+
+(defn get-tv-show [id]
+  (request (str "tv" id)))
