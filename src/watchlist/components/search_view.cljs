@@ -5,7 +5,7 @@
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
             [themoviedb.core :as tmdb]
-            [watchlist.components.movie-view :refer [search-result]]))
+            [watchlist.components.rating-view :refer [rating-view]]))
 
 
 (def transition-group (.. js/React  -addons -CSSTransitionGroup))
@@ -58,3 +58,15 @@
                                             :component dom/ul}
                       (om/build-all search-result results
                                     {:init-state {:add-ch add-ch}}))))))
+
+
+(defn search-result [result]
+  (reify
+    om/IRenderState
+    (render-state [_ {:keys [add-ch]}]
+      (dom/div #js {:className "result" :onClick #(put! add-ch result)}
+               (dom/img #js {:src (tmdb/image-url :poster :tiny (:poster_path result))
+                             :className "poster"})
+               (dom/span nil (:title result))
+               (om/build rating-view {:rating (:vote_average result) :max-rating 10})
+               (dom/span #js {:className "date"} (:release_date result))))))

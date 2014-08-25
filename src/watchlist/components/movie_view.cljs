@@ -18,15 +18,3 @@
               (dom/button #js {:className "btn"
                                :onClick #(put! delete-ch @movie)}
                           "delete")))))
-
-
-(defn search-result [result]
-  (reify
-    om/IRenderState
-    (render-state [_ {:keys [add-ch]}]
-      (dom/div #js {:className "result" :onClick #(put! add-ch result)}
-               (dom/img #js {:src (tmdb/image-url :poster :tiny (:poster_path result))
-                             :className "poster"})
-               (dom/span nil (:title result))
-               (om/build rating-view {:rating (:vote_average result) :max-rating 10})
-               (dom/span #js {:className "date"} (:release_date result))))))
