@@ -17,9 +17,10 @@
       (let [{:keys [add-ch delete-ch]} (om/get-state owner)]
         (go-loop []
                  (alt!
-                   add-ch ([movie] (om/transact! app-state :movies #(conj % movie)))
-                   delete-ch ([movie] (om/transact! app-state :movies (fn [xs]
-                                                                    (vec (remove #(= movie %) xs))))))
+                   add-ch ([movie] (if (not-any? #(= movie %) (:movies @app-state))
+                                     (om/transact! app-state :movies #(conj % movie))))
+                   delete-ch ([movie] (om/transact! app-state :movies (fn [movies]
+                                                                        (vec (remove #(= movie %) movies))))))
                  (recur))))
     om/IRenderState
     (render-state [_ {:keys [add-ch delete-ch]}]
