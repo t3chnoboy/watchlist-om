@@ -1,6 +1,6 @@
 (ns watchlist.components.search-view
   (:require-macros  [cljs.core.async.macros :refer  [go]])
-  (:require [cljs.core.async :refer  [<! put! merge]]
+  (:require [cljs.core.async :refer  [<! put!]]
             [clojure.set :refer [rename-keys]]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
@@ -18,13 +18,14 @@
            :type :tv-show)
     (assoc item :type :movie)))
 
+
 (defn- filter-without-images [movies]
   (remove #(nil? (:poster_path %)) movies))
 
 
 (defn- handle-search [owner query]
-  (go (let [results (:results (<! (merge [ (tmdb/find-tv-show query)
-                                          (tmdb/find-movie query) ])))]
+  (go (let [results (concat (:results (<! (tmdb/find-movie query)))
+                            (:results (<! (tmdb/find-tv-show query))))]
         (om/update-state! owner #(assoc % :results (->> results
                                                         (filter-without-images)
                                                         (take 5)
