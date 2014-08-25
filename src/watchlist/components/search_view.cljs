@@ -24,8 +24,8 @@
 
 
 (defn- handle-search [owner query]
-  (go (let [results (concat (:results (<! (tmdb/find-movie query)))
-                            (:results (<! (tmdb/find-tv-show query))))]
+  (go (let [results (concat (<! (tmdb/find-movie query))
+                            (<! (tmdb/find-tv-show query)))]
         (om/update-state! owner #(assoc % :results (->> results
                                                         (filter-without-images)
                                                         (take 5)
