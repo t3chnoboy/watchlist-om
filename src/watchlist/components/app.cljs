@@ -1,6 +1,6 @@
 (ns watchlist.components.app
-  (:require-macros  [cljs.core.async.macros :refer  [go go-loop alt!]])
-  (:require [cljs.core.async :refer  [put! chan <!]]
+  (:require-macros  [cljs.core.async.macros :refer  [go-loop alt!]])
+  (:require [cljs.core.async :refer  [chan <!]]
             [om.dom :as dom :include-macros true]
             [om.core :as om :include-macros true]
             [watchlist.components.movie-view :refer [movie-view]]
@@ -30,6 +30,3 @@
                         (apply dom/ul nil
                                (om/build-all movie-view (:movies app-state)
                                              {:init-state {:delete-ch delete-ch}})))))))
-
-
-

@@ -1,8 +1,8 @@
 (ns watchlist.core
   (:require [om.core :as om :include-macros true]
+            [figwheel.client :as fw]
             [alandipert.storage-atom :refer  [local-storage]]
-            [watchlist.components.app :refer [app]]
-            [figwheel.client :as fw]))
+            [watchlist.components.app :refer [app]]))
 
 (enable-console-print!)
 
@@ -11,7 +11,7 @@
 (defn main []
   (om/root app
            app-state
-           {:target (. js/document (getElementById "app"))}))
+           {:target (.getElementById js/document "app")}))
 
 (main)
 (fw/watch-and-reload :jsload-callback main)

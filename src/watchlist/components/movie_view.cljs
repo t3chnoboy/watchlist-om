@@ -12,7 +12,7 @@
     (render-state [_ {:keys [delete-ch]}]
       (dom/li #js {:className "movie-item" :draggable true}
               (dom/h2 nil (movie :title))
-              (dom/img #js {:src (tmdb/image-url :poster :small (movie :poster_path)) :className "movie"})
+              (dom/img #js {:src (tmdb/image-url :poster :small (:poster_path movie)) :className "movie"})
               (om/build rating-view {:rating (:vote_average movie) :max-rating 10})
               (dom/b nil (movie :release_date))
               (dom/button #js {:className "btn"

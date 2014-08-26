@@ -5,7 +5,5 @@
 (defn rating-view [{:keys [rating max-rating]}]
   (om/component
     (apply dom/div #js {:className "rating"}
-           (map #(dom/span nil %)
-                (concat
-                  (repeat (- max-rating rating) "☆")
-                  (repeat rating "★"))))))
+           (concat (repeat (- max-rating rating) "☆")
+                   (repeat rating "★")))))
