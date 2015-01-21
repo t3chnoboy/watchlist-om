@@ -26,38 +26,26 @@
 (defn- handle-search [owner query]
   (go (let [results (concat (<! (tmdb/find-movie query))
                             (<! (tmdb/find-tv-show query)))]
-        (om/update-state! owner #(assoc % :results (->>  results
-                                                        (filter-without-images)
-                                                        (take 5)
-                                                        (map tv->movie)))))))
+        (om/update-state! owner #(assoc %
+                                        :results (->>  results
+                                                       (filter-without-images)
+                                                       (take 5)
+                                                       (map tv->movie))
+                                        :value query)))))
 
 
 (defn- handle-enter [e owner]
   (when (= (.-which e) ENTER_KEY)
     (let [{:keys [add-ch results]} (om/get-state owner)]
       (put! add-ch (first results)))
-    (om/update-state! owner #(assoc % :results []))
+    (om/update-state! owner #(assoc % :results []
+                                      :value ""))
     (set! (.. e -target -value) "")))
 
 
 (defn- handle-blur [e owner]
-  (om/update-state! owner #(assoc % :results [])))
-
-
-(defn search-view [app owner]
-  (reify
-    om/IRenderState
-    (render-state [_ {:keys [results add-ch]}]
-      (dom/div #js {:id "search-view"}
-               (dom/input #js {:type "text"
-                               :onBlur #(handle-blur % owner)
-                               :onKeyDown #(handle-enter % owner)
-                               :onChange #(handle-search owner (.. % -target -value))})
-               (apply transition-group #js {:id "search-results"
-                                            :transitionName  "fade"
-                                            :component dom/ul}
-                      (om/build-all search-result results
-                                    {:init-state {:add-ch add-ch}}))))))
+  (om/update-state! owner #(assoc % :results []
+                                     :value "")))
 
 
 (defn search-result [result]
@@ -70,3 +58,19 @@
                (dom/span nil (:title result))
                (om/build rating-view {:rating (:vote_average result) :max-rating 10})
                (dom/span #js {:className "date"} (:release_date result))))))
+
+(defn search-view [app owner]
+  (reify
+    om/IRenderState
+    (render-state [_ {:keys [results value add-ch]}]
+      (dom/div #js {:id "search-view"}
+               (dom/input #js {:type "text"
+                               :value value
+                               :onBlur #(handle-blur % owner)
+                               :onKeyDown #(handle-enter % owner)
+                               :onChange #(handle-search owner (.. % -target -value))})
+               (apply transition-group #js {:id "search-results"
+                                            :transitionName  "fade"
+                                            :component dom/ul}
+                      (om/build-all search-result results
+                                    {:init-state {:add-ch add-ch}}))))))

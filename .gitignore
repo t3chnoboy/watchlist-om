@@ -9,3 +9,4 @@ pom.xml
 .lein-plugins/
 resources/public/js/
 www
+figwheel_server.log

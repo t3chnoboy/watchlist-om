@@ -14,4 +14,4 @@
            {:target (.getElementById js/document "app")}))
 
 (main)
-(fw/watch-and-reload :jsload-callback main)
+(fw/start { :on-jsload main })
