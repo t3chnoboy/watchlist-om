@@ -6,7 +6,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (local-storage (atom {:movies []})))
+(defonce app-state (local-storage (atom {:movies []}) :movies))
 
 (defn main []
   (om/root app

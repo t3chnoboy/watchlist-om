@@ -5,16 +5,17 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.7.0-alpha5"]
-                 [org.clojure/clojurescript "0.0-2665"]
-                 [figwheel "0.2.2-SNAPSHOT"]
+                 [org.clojure/clojurescript "0.0-2850"]
+                 [figwheel "0.2.5-SNAPSHOT"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [cljs-http  "0.1.24"]
-                 [alandipert/storage-atom  "1.2.3"]
-                 [org.om/om "0.8.0"]]
+                 [alandipert/storage-atom  "1.2.4"]
+                 [cljsjs/react-with-addons "0.12.2-4"]
+                 [org.omcljs/om "0.8.8" :exclusions [cljsjs/react]]]
 
   :plugins [[lein-cljsbuild "1.0.4"]
             [lein-ring "0.8.13"]
-            [lein-figwheel "0.2.2-SNAPSHOT"]]
+            [lein-figwheel "0.2.5-SNAPSHOT"]]
 
   :source-paths ["src"]
 
@@ -35,4 +36,5 @@
   :figwheel {
              :http-server-root "public"
              :server-port 3449
+             :nrepl-port 7888
              :css-dirs ["resources/public/css"]})

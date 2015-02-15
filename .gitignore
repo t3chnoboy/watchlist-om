@@ -10,3 +10,5 @@ pom.xml
 resources/public/js/
 www
 figwheel_server.log
+.nrepl-port
+.repl/
